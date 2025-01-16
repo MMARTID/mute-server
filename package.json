@@ -1,0 +1,24 @@
+{
+  "name": "mute-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MMARTID/mute-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MMARTID/mute-server/issues"
+  },
+  "homepage": "https://github.com/MMARTID/mute-server#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "morgan": "^1.10.0"
+  }
+}
