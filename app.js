@@ -13,7 +13,6 @@ config(app)
 const indexRouter = require("./routes/index.routes.js")
 app.use('/api', indexRouter )
 
-//const errorHandling = require("./error-handling")
 
 
 // START SERVER

@@ -1,11 +1,10 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require("mongoose")
 
 const userSchema = new Schema(
   {
     email: {
       type: String,
       //required: [true, 'Email is required.'],
-      unique: true,
       
     },
     password: {
@@ -14,14 +13,20 @@ const userSchema = new Schema(
     },
     username: {
       type: String,
+    },
+    profilePicture:{
+      type: String,
+      default: 'default-profile-pic.jpg'
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'], 
+      default: 'user'
     }
-  },
-  {
-    // `createdAt` and `updatedAt`    
-    timestamps: true
-  }
+},
+  { timestamps : true }
 );
 
-const User = model("User", userSchema);
+const User = model("User", userSchema)
 
-module.exports = User;
+module.exports = User

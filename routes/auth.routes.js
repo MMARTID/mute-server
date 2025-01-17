@@ -12,7 +12,7 @@ router.post("/signup", async (req, res, next ) => {
         const usuarioEncontrado = await User.findOne( { email: email } )
         if (usuarioEncontrado !== null) {
           res.status(400).json({errorMessage: "ya existe un usuario con ese correo electronico"})
-          return // detener la ejecución de la ruta
+          return 
         }
         await User.create({
             username: username,
@@ -40,7 +40,7 @@ router.post("/login", async (req, res, next) => {
           return res.status(400).json({ errorMessage: "Usuario no encontrado" })
       }
 
-      // Comparar la contraseña (esto es solo un ejemplo sin cifrado)
+      // Comparar la contraseña (ejemplo sin cifrado )
       if (usuario.password !== password) {
           // Si la contraseña no coincide
           return res.status(400).json({ errorMessage: "Contraseña incorrecta" })
