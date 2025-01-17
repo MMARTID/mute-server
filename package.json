@@ -18,6 +18,7 @@
   "homepage": "https://github.com/MMARTID/mute-server#readme",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.21.2",
     "morgan": "^1.10.0"
   }

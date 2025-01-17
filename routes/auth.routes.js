@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const User = require("../models/User.model")
+const bcryptjs = require("bcryptjs")
 
 // ===> /api/auth/signup
 router.post("/signup", async (req, res, next ) => {
@@ -10,14 +11,20 @@ router.post("/signup", async (req, res, next ) => {
 
     try{
         const usuarioEncontrado = await User.findOne( { email: email } )
+
+        //comprobar que no existe un usuario con el mismo email
         if (usuarioEncontrado !== null) {
           res.status(400).json({errorMessage: "ya existe un usuario con ese correo electronico"})
           return 
         }
+
+        // cifrar la contraseña
+        const contraseñaCifrada = await bcryptjs.hash(password, 12)
+
         await User.create({
             username: username,
             email: email,
-            password: password
+            password: contraseñaCifrada
           })
           res.sendStatus(201)
 
@@ -29,11 +36,11 @@ router.post("/signup", async (req, res, next ) => {
 
 router.post("/login", async (req, res, next) => {
   console.log(req.body)
-  const { username, password } = req.body
+  const { email, password } = req.body
 
   try {
-      // Buscar usuario por username
-      const usuario = await User.findOne({ username: username })
+      // Buscar usuario por email
+      const usuario = await User.findOne({ email : email })
       
       if (!usuario) {
           // Si no se encuentra el usuario
@@ -47,7 +54,7 @@ router.post("/login", async (req, res, next) => {
       }
 
       // Si el login es exitoso
-      res.status(200).json({ message: "Login exitoso" })
+     const compararContraseña = axait 
 
   } catch (error) {
       next(error)

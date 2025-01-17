@@ -26,15 +26,19 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-
-
 // VERIFICACION REQUIERIDA ⤵️
 router.patch("/:userId", async (req, res, next) => {
   try {
     const updateData = req.body;
-
-    //res.status(200).json({message: "user data"});
-  } catch (e) {}
+    const user = await User.findByIdAndUpdate(
+     req.params.userId, 
+     updateData, 
+     { new: true, runValidators: true } // `new` devuelve el documento actualizado, `runValidators` valida el modelo
+    );
+    res.status(200).json(user);
+  } catch (e) {
+    next(e)
+  }
 });
 
 module.exports = router;
