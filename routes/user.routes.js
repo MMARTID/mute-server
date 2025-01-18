@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User.model");
+const { verifyToken } = require("../middlewares/auth.verify");
 
 router.get("/", async (req, res, next) => {
   console.log(req);
@@ -27,9 +28,15 @@ router.get("/:userId", async (req, res) => {
 });
 
 // VERIFICACION REQUIERIDA ⤵️
-router.patch("/:userId", async (req, res, next) => {
+router.patch("/:userId", verifyToken, async (req, res, next) => {
   try {
+
     const updateData = req.body;
+    // nos aseguramos de que solo se pueda actualizar si la id del payload y del cliente coinciden
+    if(req.payload.userId !== req.params.userId) {
+      res.status(401).json({errorMessage: "No tienes permisos para actualizar este usuario"})
+      return
+    }
     const user = await User.findByIdAndUpdate(
      req.params.userId, 
      updateData, 
