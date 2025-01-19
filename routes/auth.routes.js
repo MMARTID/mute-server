@@ -2,7 +2,8 @@ const router = require("express").Router();
 const User = require("../models/User.model");
 const bcryptjs = require("bcryptjs")
 const jwt = require("jsonwebtoken");
-const {verifyToken} = require('../middlewares/auth.verify')
+const {verifyToken} = require("../middlewares/auth.verify")
+
 // ===> /api/auth/signup
 router.post("/signup", async (req, res, next) => {
   console.log(req.body);
@@ -13,11 +14,9 @@ router.post("/signup", async (req, res, next) => {
     const usuarioEncontrado = await User.findOne({ email: email });
 
     if (usuarioEncontrado !== null) {
-      res
-        .status(400)
-        .json({
-          errorMessage: "ya existe un usuario con ese correo electronico",
-        });
+      res.status(400).json({
+        errorMessage: "ya existe un usuario con ese correo electronico",
+      });
       return;
     }
 
@@ -77,13 +76,13 @@ router.post("/login", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});    
+});
 router.get("/verify", verifyToken, (req, res, next) => {
 
-    // esta ruta solo se usa para verificar el token una vez cuando el usuario está navegando por primera vez por la web.
-    // se usa para indicar al front que el usuario es valido y quien es ese usuario.
-  
-    res.status(202).json({ payload: req.payload })
+  // esta ruta solo se usa para verificar el token una vez cuando el usuario está navegando por primera vez por la web.
+  // se usa para indicar al front que el usuario es valido y quien es ese usuario.
+
+  res.status(202).json({ payload: req.payload })
 });
 
 module.exports = router;
