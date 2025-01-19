@@ -11,7 +11,7 @@ function config (app) {
 
   app.use(express.json());
   app.use(logger("dev"));
-  app.use(express.static("public"));
+  app.use(express.static("view"));
   app.use(express.urlencoded({ extended: false }));
   
 }
