@@ -15,16 +15,19 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:userId", async (req, res) => {
+// ==> /api/users/:userId
+router.get("/:userId", async (req, res, next) => {
   console.log(req.params);
 
   try {
     const singleUser = await User.findById(req.params.userId);
+    
     res.status(200).json(singleUser);
     // devuelve el usuario con el id del parametro 📋
   } catch (e) {
     next(e);
   }
+  
 });
 
 // VERIFICACION REQUIERIDA ⤵️
