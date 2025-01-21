@@ -2,45 +2,54 @@ const express = require('express')
 const router = express.Router()
 const Comment = require('../models/Comment.model');
 const { verifyToken } = require('../middlewares/auth.verify');
+const { default: mongoose } = require('mongoose');
 
 // ==> /api/comments/:postId
-router.get("/:postId", async (req, res ) => {
-
-    try {
-        const { postId } = req.params
-        const comments = await Comment.find({ post: postId })
-        res.status(200).json(comments)
-        console.log(comments)
-    } catch (error) {
-        console.log(error)
-    }
-
-    //res.status(200).json({message: "comments data"});
-});
 
 // ==> /api/comments/:postId/:authorId
 // CREA UN COMENTARIO EN UN POST
-router.post("/:postId/:authorId", verifyToken ,async (req, res) => {
-    
-try{
-    const { postId } = req.params
+router.post("/:postId", verifyToken, async (req, res) => {
+    try {
+      console.log(req.params)
+      const { content } = req.body; // El contenido del comentario
+      const authorId = req.payload._id; // ID del autor
+ 
 
-    const { content } = req.body
-   
-    const { authorId } = req.params
-    
-    const newComment = await Comment.create({
-        content : content,
+  
+      // Crear el comentario
+      const newComment = await Comment.create({
+        content,
         author: authorId,
-        post: postId
-    })
-console.log(newComment)
-    res.status(201).json(newComment)
-   } catch (e) {
-    console.log(e)
-    
-   }
-})
+        post: req.params.postId,
+      });
+  
+      res.status(201).json(newComment);
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+router.get("/:postId",verifyToken, async (req, res, next ) => {
+
+    try {
+        console.log(req.params.postId)
+        const comments = await Comment.find({"post" : `${req.params.postId}`})
+        .select('content author')
+        .populate({
+            path: "post",
+            select: "author" 
+        }).populate({
+            path:"author"
+        })
+        
+        res.status(200).json(comments)
+        
+    } catch (error) {
+        next(error)
+    }
+    //res.status(200).json({message: "comments data"});
+   
+});
 
 router.delete("/:commentId", verifyToken, async (req, res) => {
     try {

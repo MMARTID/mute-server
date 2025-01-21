@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { verifyToken } = require("../middlewares/auth.verify.js");
 const Post = require("../models/Post.model");
+const Comment = require("../models/Comment.model")
 
 
 // ==> /api/posts
@@ -12,7 +13,10 @@ router.get("/", async (req, res) => {
       select: "username profilePicture",
     });
     res.status(200).json(allPosts);
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Ha ocurrido un error en el servidor" });
+  }
 });
 
 // ==> /api/posts/all
@@ -42,18 +46,22 @@ router.get("/:userId", async (req, res, next) => {
       path: "author",
       select: "username profilePicture",
     })
-
+    console.log(posts)
     res.status(200).json(posts);
 
-  } catch (e) {
-    next(e);
+  }catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Ha ocurrido un error en el servidor" });
   }
 });
 
-// ==> /api/posts/:postId
+
+
+
+// ==> /api/posts/:userId
 // 🔐 PUBLICA UN POST 
 router.post("/:userId", verifyToken, async (req, res) => {
-    console.log(req.payload)
+    console.log(req.body)
   try {
     const { author, title, content, visibility } = req.body;
 
@@ -62,14 +70,59 @@ router.post("/:userId", verifyToken, async (req, res) => {
         return
     }
     const newPost = await Post.create({
-      author: author,
+      author: req.body.loggedUserId,
       title: title,
       content: content,
       visibility: visibility,
     });
     res.status(201).json(newPost);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Ha ocurrido un error en el servidor" });
   }
 });
+// ==> api/posts/:postId/likes
+// ❌🔓❌  TRAE LOS LIKES DE UN POST
+router.get('/:postId/likes', async (req, res) => {
+  try {
+    const {postId} = req.params
+    //cogemos solo la porpiedad likes de postId
+    const post = await Post.findById(postId, "likes")
+    //devolvemos un objeto que tiene el id del comentario al que se le dio like y el array de likes
+    res.status(200).json(post)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Ha ocurrido un error en el servidor" });
+  }
+})
+
+// ==> api/posts/:postId/likes
+// 🔐 AÑADE UN LIKE
+router.patch("/:postId/likes", verifyToken, async (req, res) => {
+
+  if (!title || !content || !visibility) {
+    return res.status(400).json({ errorMessage: "Todos los campos son obligatorios" });
+  }
+  
+  try {
+    const { postId } = req.params
+    //!CAMBIAR POR EL PAYLOAD
+    const { userId } = req.body
+
+    const post= await Post.findById(postId)
+    // comprobar si el id del like existe
+    if (!post) {
+      return res.status(404).json({ message: 'este post ha sido eliminado o no existe' });
+    }
+    // añadir el id del usuario al array de la propiedad likes
+    post.likes.push(userId);
+
+    // SIN ESTO NO SE ACTUALIZA 
+    post.save()
+    //dever confirmacion
+    res.status(200).json({message : 'like añadido'})
+  } catch (error) {
+    console.log(error)
+  }
+})
 module.exports = router;

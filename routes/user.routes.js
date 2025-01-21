@@ -36,7 +36,7 @@ router.get("/:userId", verifyToken, async (req, res, next) => {
       return res.status(200).json(singleUser);
     }
 
-    //SELECCIONAMOS LA DATA PUBLICA DE LOS USUARIOS A DEVOLVER
+    //(copia de datos modelo)SELECCIONAMOS LA DATA PUBLICA DE LOS USUARIOS A DEVOLVER
     const publicUserData = {
       username: singleUser.username,
       profilePicture: singleUser.profilePicture,
@@ -49,7 +49,7 @@ router.get("/:userId", verifyToken, async (req, res, next) => {
   } catch (e) {
 
     next(e);
-    
+
   }
 });
 
