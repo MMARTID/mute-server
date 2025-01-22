@@ -25,7 +25,7 @@ module.exports = (app) => {
   app.use(
     cors({
       origin: [FRONTEND_URL,"https://mute-by-mmartid.netlify.app"],
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true 
     })

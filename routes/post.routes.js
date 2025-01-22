@@ -84,6 +84,33 @@ router.post("/:userId", verifyToken, async (req, res) => {
     res.status(500).json({ errorMessage: "Ha ocurrido un error en el servidor" });
   }
 });
+
+
+
+router.delete("/:postId", verifyToken, async (req, res) => {
+  try {
+    const { postId } = req.params
+    console.log(postId)
+    const post = await Post.findById(postId)
+    console.log(post)
+    if(!post) {
+      res.status(404).json({errorMessage: "Post no encontrado"})
+      return
+    }
+    await Post.findByIdAndDelete(postId)
+    res.sendStatus(204)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Ha ocurrido un error en el servidor" });
+  }
+});
+
+
+
+
+
+
+
 // ==> api/posts/:postId/likes
 // ❌🔓❌  TRAE LOS LIKES DE UN POST
 router.get('/:postId/likes', async (req, res) => {
@@ -124,4 +151,5 @@ router.patch("/:postId/likes", verifyToken, async (req, res) => {
     console.log(error)
   }
 })
+
 module.exports = router;
