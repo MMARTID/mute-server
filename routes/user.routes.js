@@ -57,8 +57,10 @@ router.get("/:userId", verifyToken, async (req, res, next) => {
 router.patch("/:userId", verifyToken, async (req, res, next) => {
   try {
     const updateData = req.body;
+    console.log( 'payload',req.payload)
+    console.log( 'params',req.params.userId)
     // nos aseguramos de que solo se pueda actualizar si la id del payload y del cliente coinciden
-    if (req.payload.userId !== req.params.userId) {
+    if (req.payload._id !== req.params.userId) {
       res
         .status(401)
         .json({

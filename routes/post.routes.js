@@ -21,9 +21,10 @@ router.get("/", async (req, res) => {
 
 // ==> /api/posts/all
 // 🔐 RUTA PARA TRAER //! TODOS LOS POSTS // DE TIPO GENERAL y PRIVATE(CHNG TO USERS TYPE) 
-router.get("/all", verifyToken, async (req, res) => {
+router.get("/all/:type", verifyToken, async (req, res) => {
+  console.log(req.params)
     try {
-      const allPosts = await Post.find().populate({
+      const allPosts = await Post.find({type : req.params.type}).populate({
         path: "author",
         select: "username profilePicture",
       });
@@ -35,13 +36,15 @@ router.get("/all", verifyToken, async (req, res) => {
   });  
 
 
+
+
 //==> /api/posts/:userId
 // ❌🔓❌ TRAE POSTS DE TIPO GENERAL DE UN //!UNICO USUARIO
 router.get("/:userId", async (req, res, next) => {
   try {
     const posts = await Post.find({ 
         author: req.params.userId,
-        visibility: "general"
+        
     }).populate({
       path: "author",
       select: "username profilePicture",
@@ -66,7 +69,7 @@ router.post("/:userId", verifyToken, async (req, res) => {
     const { author, title, content, visibility } = req.body;
 
     if(req.payload._id !== req.params.userId) {
-        res.status(401).json({errorMessage: "MENUDO HACKER"})
+        res.status(401).json({errorMessage: "solo puedes publicar tus propios posts"})
         return
     }
     const newPost = await Post.create({
@@ -100,10 +103,6 @@ router.get('/:postId/likes', async (req, res) => {
 // 🔐 AÑADE UN LIKE
 router.patch("/:postId/likes", verifyToken, async (req, res) => {
 
-  if (!title || !content || !visibility) {
-    return res.status(400).json({ errorMessage: "Todos los campos son obligatorios" });
-  }
-  
   try {
     const { postId } = req.params
     //!CAMBIAR POR EL PAYLOAD

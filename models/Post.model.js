@@ -23,9 +23,14 @@ const postSchema = new mongoose.Schema(
         ref: "User" // relación con el modelo de usuario para saber quién y cuantos han dado like
       }
     ],
+    type: {
+      type: String,
+      enum: ['all','tech', 'gaming', 'news'],
+      default: 'all' 
+    },
     visibility: {
       type: String,
-      enum: ['general', 'private'],
+      enum: ['general', 'members'],
       default: 'general' 
     }
   },
