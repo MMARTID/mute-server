@@ -77,7 +77,7 @@ router.post("/login", async (req, res, next) => {
     next(error);
   }
 });
-router.get("/verify", verifyToken, async (req, res, next) => {
+router.get("/verify", verifyToken, (req, res, next) => {
 
   // esta ruta solo se usa para verificar el token una vez cuando el usuario está navegando por primera vez por la web.
   // se usa para indicar al front que el usuario es valido y quien es ese usuario.
