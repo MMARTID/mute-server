@@ -24,8 +24,10 @@ module.exports = (app) => {
   // controls a very specific header to pass headers from the frontend
   app.use(
     cors({
-      origin: [FRONTEND_URL],
-      credentials: true
+      origin: [FRONTEND_URL,"https://mute-by-mmartid.netlify.app"],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true 
     })
   );
 
