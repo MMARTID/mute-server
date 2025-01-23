@@ -121,6 +121,7 @@ router.delete("/:postId", verifyToken, async (req, res) => {
 // ❌🔓❌  TRAE LOS LIKES DE UN POST
 router.get('/:postId/likes', async (req, res) => {
   try {
+    console.log(req.params)
     const {postId} = req.params
     //cogemos solo la porpiedad likes de postId
     const post = await Post.findById(postId, "likes")
@@ -146,12 +147,15 @@ router.patch("/:postId/likes", verifyToken, async (req, res) => {
     if (!post) {
       return res.status(404).json({ message: 'este post ha sido eliminado o no existe' });
     }
+    if (post.likes.includes(userId)) {
+      return res.status(400).json({ message: "Ya has dado like a este post" });
+    }
     // añadir el id del usuario al array de la propiedad likes
     post.likes.push(userId);
 
     // SIN ESTO NO SE ACTUALIZA 
     post.save()
-    //dever confirmacion
+    //devolver confirmacion
     res.status(200).json({message : 'like añadido'})
   } catch (error) {
     console.log(error)
