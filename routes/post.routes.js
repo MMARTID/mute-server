@@ -68,10 +68,15 @@ router.post("/:userId", verifyToken, async (req, res) => {
   try {
     const { author, title, type ,content, visibility } = req.body;
 
+    if (!content || !visibility) {
+      return res.status(400).json({ errorMessage: "Todos los campos son obligatorios" });
+    }
+
     if(req.payload._id !== req.params.userId) {
         res.status(401).json({errorMessage: "solo puedes publicar tus propios posts"})
         return
     }
+
     const newPost = await Post.create({
       author: req.body.loggedUserId,
       title: title,
