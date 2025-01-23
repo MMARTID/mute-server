@@ -26,7 +26,7 @@ const postSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: ['all','tech', 'gaming', 'news'],
-      default: 'all' 
+      
     },
     visibility: {
       type: String,

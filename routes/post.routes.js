@@ -66,7 +66,7 @@ router.get("/:userId", async (req, res, next) => {
 router.post("/:userId", verifyToken, async (req, res) => {
     console.log(req.body)
   try {
-    const { author, title, content, visibility } = req.body;
+    const { author, title, type ,content, visibility } = req.body;
 
     if(req.payload._id !== req.params.userId) {
         res.status(401).json({errorMessage: "solo puedes publicar tus propios posts"})
@@ -76,6 +76,7 @@ router.post("/:userId", verifyToken, async (req, res) => {
       author: req.body.loggedUserId,
       title: title,
       content: content,
+      type: type,
       visibility: visibility,
     });
     res.status(201).json(newPost);
