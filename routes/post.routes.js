@@ -23,16 +23,19 @@ router.get("/", async (req, res) => {
 // 🔐 RUTA PARA TRAER //! TODOS LOS POSTS // DE TIPO GENERAL y PRIVATE(CHNG TO USERS TYPE) 
 router.get("/all/:type", verifyToken, async (req, res) => {
   console.log(req.params)
-    try {
-      const allPosts = await Post.find({type : req.params.type}).populate({
-        path: "author",
-        select: "username profilePicture",
-      });
-      res.status(200).json(allPosts);
-    } catch (error) {
-        console.log(error)
-        res.json(error)
-    }
+  try {
+    const query = req.params.type === "all" ? {} : { type: req.params.type };
+
+    const allPosts = await Post.find(query).populate({
+      path: "author",
+      select: "username profilePicture",
+    });
+
+    res.status(200).json(allPosts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Error al obtener los posts" });
+  }
   });  
 
 
@@ -96,9 +99,9 @@ router.post("/:userId", verifyToken, async (req, res) => {
 router.delete("/:postId", verifyToken, async (req, res) => {
   try {
     const { postId } = req.params
-    console.log(postId)
+    
     const post = await Post.findById(postId)
-    console.log(post)
+    
     if(!post) {
       res.status(404).json({errorMessage: "Post no encontrado"})
       return
@@ -135,12 +138,13 @@ router.get('/:postId/likes', async (req, res) => {
 
 // ==> api/posts/:postId/likes
 // 🔐 AÑADE UN LIKE
-router.patch("/:postId/likes", verifyToken, async (req, res) => {
+router.patch("/:postId/:userId", verifyToken, async (req, res) => {
 
   try {
-    const { postId } = req.params
-    //!CAMBIAR POR EL PAYLOAD
-    const { userId } = req.body
+    console.log(req.params)
+    const { postId , userId } = req.params
+    
+   
 
     const post= await Post.findById(postId)
     // comprobar si el id del like existe
