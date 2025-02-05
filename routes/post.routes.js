@@ -152,7 +152,12 @@ router.patch("/:postId/:userId", verifyToken, async (req, res) => {
       return res.status(404).json({ message: 'este post ha sido eliminado o no existe' });
     }
     if (post.likes.includes(userId)) {
-      return res.status(400).json({ message: "Ya has dado like a este post" });
+      const updatedPost = await Post.findByIdAndUpdate(
+        postId,
+        { $pull: { likes: userId } },  // Usa $pull para eliminar el userId de likes
+        { new: true }  // Devuelve el post actualizado
+      );
+      return res.status(200).json({ message: "Like eliminado", post: updatedPost });
     }
     // añadir el id del usuario al array de la propiedad likes
     post.likes.push(userId);
